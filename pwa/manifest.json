@@ -1,0 +1,19 @@
+{
+  "name": "MythraLux Edu",
+  "short_name": "MythraLux",
+  "description": "Smart Learning Platform — Quiz, Notes, Tools & More",
+  "start_url": "/MythraLux-Edu/",
+  "display": "standalone",
+  "background_color": "#0d0c1a",
+  "theme_color": "#4f6ef7",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["education"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Quiz Master", "url": "/MythraLux-Edu/?app=quiz-master", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
