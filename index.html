@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="MythraLux Edu — Smart Learning Platform"/>
+  <meta name="theme-color" content="#0f0e1a"/>
+  <title>MythraLux Edu</title>
+
+  <link rel="manifest" href="pwa/manifest.json"/>
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="font-inter">
+
+  <!-- ═══════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="app-header" id="app-header">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <a href="/" class="header-logo" aria-label="MythraLux Edu Home">
+        <div class="logo-mark">
+          <svg viewBox="0 0 32 32" fill="none" class="logo-svg">
+            <path d="M16 2L28 8v16L16 30 4 24V8L16 2z" stroke="url(#lg)" stroke-width="2" fill="url(#lgf)"/>
+            <path d="M16 8l6 3.5v7L16 22l-6-3.5v-7L16 8z" fill="white" opacity=".9"/>
+            <defs>
+              <linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#3b82f6"/>
+              </linearGradient>
+              <linearGradient id="lgf" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#6366f1" stop-opacity=".2"/><stop offset="100%" stop-color="#3b82f6" stop-opacity=".1"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">MythraLux</span>
+          <span class="logo-sub">Edu</span>
+        </div>
+      </a>
+
+      <!-- Search -->
+      <div class="header-search" id="header-search">
+        <i data-lucide="search" class="search-icon"></i>
+        <input type="text" id="search-input" class="search-input"
+          placeholder="Search apps…" autocomplete="off" aria-label="Search apps"/>
+        <button id="search-clear" class="search-clear hidden" onclick="clearSearch()">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <!-- Search toggle (mobile) -->
+        <button class="hdr-btn md-hidden" id="btn-search-toggle" onclick="toggleMobileSearch()" aria-label="Search">
+          <i data-lucide="search" class="w-5 h-5"></i>
+        </button>
+        <!-- Language -->
+        <div class="lang-pill">
+          <button class="lang-opt active" id="lang-en" onclick="setLang('en')">EN</button>
+          <button class="lang-opt" id="lang-bn" onclick="setLang('bn')">বাং</button>
+        </div>
+        <!-- Theme -->
+        <button class="hdr-btn" id="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
+          <i data-lucide="sun" class="w-5 h-5 dark-hide"></i>
+          <i data-lucide="moon" class="w-5 h-5 light-hide"></i>
+        </button>
+        <!-- Feedback -->
+        <button class="hdr-btn" onclick="openFeedback()" aria-label="Send feedback">
+          <i data-lucide="message-circle" class="w-5 h-5"></i>
+        </button>
+        <!-- Profile -->
+        <button class="profile-avatar-btn" id="btn-profile" onclick="openProfile()" aria-label="Profile">
+          <img id="header-avatar" src="" alt="" class="hidden w-full h-full object-cover rounded-full"/>
+          <span id="header-avatar-placeholder" class="avatar-placeholder">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Search Bar -->
+    <div id="mobile-search-bar" class="mobile-search hidden">
+      <i data-lucide="search" class="w-4 h-4 text-slate-400 shrink-0"></i>
+      <input type="text" id="search-input-mobile" class="mobile-search-input"
+        placeholder="Search apps…" oninput="onSearch(this.value)"/>
+      <button onclick="toggleMobileSearch()" class="text-slate-400"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN LAYOUT
+  ═══════════════════════════════════════════ -->
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <nav class="sidebar-nav">
+        <p class="sidebar-label" data-lang-en="Categories" data-lang-bn="বিভাগ">Categories</p>
+        <div id="category-nav" class="category-nav"></div>
+
+        <div class="sidebar-divider"></div>
+
+        <p class="sidebar-label" data-lang-en="Quick Links" data-lang-bn="দ্রুত লিংক">Quick Links</p>
+        <a href="#featured" class="sidebar-link">
+          <i data-lucide="star" class="w-4 h-4"></i>
+          <span data-lang-en="Featured" data-lang-bn="বিশেষ">Featured</span>
+        </a>
+        <a href="#all-apps" class="sidebar-link">
+          <i data-lucide="grid" class="w-4 h-4"></i>
+          <span data-lang-en="All Apps" data-lang-bn="সব অ্যাপ">All Apps</span>
+        </a>
+        <button onclick="openBookmarks()" class="sidebar-link w-full">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          <span data-lang-en="Bookmarks" data-lang-bn="বুকমার্ক">Bookmarks</span>
+        </button>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Sidebar Profile Card -->
+        <div class="sidebar-profile-card" id="sidebar-profile-card" onclick="openProfile()">
+          <div class="sp-avatar" id="sp-avatar">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </div>
+          <div class="sp-info">
+            <p class="sp-name" id="sp-name">Set up Profile</p>
+            <p class="sp-class" id="sp-class">Tap to edit</p>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 ml-auto"></i>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main" id="app-main">
+
+      <!-- Loading State -->
+      <div id="state-loading" class="state-screen">
+        <div class="loading-grid">
+          <div class="skeleton-featured"></div>
+          <div class="skeleton-row">
+            <div class="skeleton-card" style="animation-delay:.1s"></div>
+            <div class="skeleton-card" style="animation-delay:.2s"></div>
+            <div class="skeleton-card" style="animation-delay:.3s"></div>
+            <div class="skeleton-card" style="animation-delay:.4s"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="state-error" class="state-screen hidden">
+        <div class="error-box">
+          <div class="text-5xl mb-4">⚠️</div>
+          <h3 class="text-lg font-bold text-white mb-2" data-lang-en="Couldn't load apps" data-lang-bn="অ্যাপ লোড হয়নি">Couldn't load apps</h3>
+          <p class="text-slate-400 text-sm mb-4" id="error-msg">Check your internet connection</p>
+          <button onclick="retryLoad()" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold">
+            <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Retry
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty Search State -->
+      <div id="state-empty" class="state-screen hidden">
+        <div class="error-box">
+          <div class="text-5xl mb-4">🔍</div>
+          <h3 class="text-lg font-bold mb-2" data-lang-en="No apps found" data-lang-bn="কোনো অ্যাপ পাওয়া যায়নি">No apps found</h3>
+          <p class="text-slate-400 text-sm" id="empty-query"></p>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div id="content" class="content-area hidden">
+
+        <!-- Filter Chips (mobile/tablet) -->
+        <div class="filter-chips-row" id="filter-chips-row"></div>
+
+        <!-- Featured Section -->
+        <section id="featured" class="content-section">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i data-lucide="star" class="w-5 h-5 text-yellow-400"></i>
+              <span data-lang-en="Featured Apps" data-lang-bn="বিশেষ অ্যাপ">Featured Apps</span>
+            </h2>
+          </div>
+          <div id="featured-grid" class="featured-grid"></div>
+        </section>
+
+        <!-- All Apps Section -->
+        <section id="all-apps" class="content-section">
+          <div class="section-header">
+            <h2 class="section-title" id="section-all-title">
+              <i data-lucide="grid" class="w-5 h-5"></i>
+              <span data-lang-en="All Apps" data-lang-bn="সব অ্যাপ">All Apps</span>
+            </h2>
+            <span id="app-count-badge" class="count-badge"></span>
+          </div>
+          <div id="apps-grid" class="apps-grid"></div>
+        </section>
+
+        <!-- Coming Soon Section -->
+        <section id="coming-soon-section" class="content-section hidden">
+          <div class="section-header">
+            <h2 class="section-title">
+              <i data-lucide="clock" class="w-5 h-5 text-orange-400"></i>
+              <span data-lang-en="Coming Soon" data-lang-bn="শীঘ্রই আসছে">Coming Soon</span>
+            </h2>
+          </div>
+          <div id="coming-grid" class="apps-grid"></div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MOBILE BOTTOM NAV
+  ═══════════════════════════════════════════ -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bn-item active" id="bn-home" onclick="scrollToTop()">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span data-lang-en="Home" data-lang-bn="হোম">Home</span>
+    </button>
+    <button class="bn-item" onclick="filterCategory('Quiz')">
+      <i data-lucide="book-open" class="w-5 h-5"></i>
+      <span data-lang-en="Quiz" data-lang-bn="কুইজ">Quiz</span>
+    </button>
+    <button class="bn-item" onclick="openFeedback()">
+      <i data-lucide="message-circle" class="w-5 h-5"></i>
+      <span data-lang-en="Feedback" data-lang-bn="মতামত">Feedback</span>
+    </button>
+    <button class="bn-item" onclick="openProfile()">
+      <i data-lucide="user" class="w-5 h-5"></i>
+      <span data-lang-en="Profile" data-lang-bn="প্রোফাইল">Profile</span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       APP VIEWER (iframe overlay)
+  ═══════════════════════════════════════════ -->
+  <div id="app-viewer" class="app-viewer hidden" role="dialog" aria-modal="true">
+    <div class="av-header">
+      <div class="av-info">
+        <button onclick="closeAppViewer()" class="av-back-btn" aria-label="Close">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <div class="av-app-thumb" id="av-thumb"></div>
+        <div>
+          <p class="av-app-name" id="av-name">App Name</p>
+          <p class="av-app-cat" id="av-cat">Category</p>
+        </div>
+      </div>
+      <div class="av-actions">
+        <button onclick="openInNewTab()" class="av-btn" title="Open in new tab">
+          <i data-lucide="external-link" class="w-4 h-4"></i>
+        </button>
+        <button onclick="closeAppViewer()" class="av-btn" title="Close">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+    <div class="av-body">
+      <div id="av-loading" class="av-loading">
+        <div class="loader"></div>
+        <p class="text-slate-400 text-sm mt-3" data-lang-en="Loading app…" data-lang-bn="লোড হচ্ছে…">Loading app…</p>
+      </div>
+      <iframe id="app-iframe" class="app-iframe" src="" title="App" allow="fullscreen" onload="onIframeLoad()"></iframe>
+      <!-- Sticky ad in app viewer -->
+      <div class="av-ad-strip" id="av-ad-strip">
+        <div class="ad-placeholder-strip" id="av-ad-slot">
+          <span class="ad-label">Ad</span>
+          <!-- AdSense will go here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PROFILE MODAL
+  ═══════════════════════════════════════════ -->
+  <div id="modal-profile" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+
+      <div class="profile-header">
+        <!-- Avatar -->
+        <div class="avatar-upload-zone" id="avatar-zone" onclick="triggerAvatarUpload()" title="Click or drag image">
+          <img id="profile-avatar-img" src="" alt="" class="hidden w-full h-full object-cover rounded-full"/>
+          <div id="profile-avatar-placeholder" class="avatar-up-placeholder">
+            <i data-lucide="camera" class="w-6 h-6"></i>
+            <span class="text-xs mt-1" data-lang-en="Upload" data-lang-bn="ছবি">Upload</span>
+          </div>
+          <div class="avatar-edit-badge"><i data-lucide="pencil" class="w-3 h-3"></i></div>
+        </div>
+        <input type="file" id="avatar-file-input" accept="image/*" class="hidden" onchange="onAvatarFile(event)"/>
+
+        <h2 class="text-xl font-bold mt-3 mb-0.5" data-lang-en="My Profile" data-lang-bn="আমার প্রোফাইল">My Profile</h2>
+        <p class="text-xs text-slate-400" data-lang-en="Stored locally on your device" data-lang-bn="ডিভাইসে সেভ থাকে">Stored locally on your device</p>
+      </div>
+
+      <div class="profile-form">
+        <div class="pf-group">
+          <label class="pf-label" data-lang-en="Full Name" data-lang-bn="পুরো নাম">Full Name</label>
+          <input type="text" id="pf-name" class="pf-input" placeholder="Your name" maxlength="40"/>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label" data-lang-en="Class" data-lang-bn="ক্লাস">Class</label>
+          <select id="pf-class" class="pf-input">
+            <option value="">Select class</option>
+            <option>Class 6</option><option>Class 7</option><option>Class 8</option>
+            <option>Class 9</option><option>Class 10</option><option>Class 11</option>
+            <option>Class 12</option><option>University</option><option>Other</option>
+          </select>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label" data-lang-en="Bio" data-lang-bn="পরিচয়">Bio</label>
+          <textarea id="pf-bio" class="pf-input pf-textarea" placeholder="A short intro about you…" maxlength="120" rows="2"></textarea>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label" data-lang-en="Favorite Subject" data-lang-bn="প্রিয় বিষয়">Favorite Subject</label>
+          <input type="text" id="pf-subject" class="pf-input" placeholder="e.g. Biology, Math…" maxlength="30"/>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="profile-stats" id="profile-stats"></div>
+
+      <div class="profile-actions">
+        <button onclick="saveProfile()" class="btn-primary w-full py-3.5 rounded-2xl font-bold text-sm">
+          <i data-lucide="check" class="w-4 h-4 inline mr-1"></i>
+          <span data-lang-en="Save Profile" data-lang-bn="সেভ করুন">Save Profile</span>
+        </button>
+        <button onclick="closeProfile()" class="btn-secondary w-full py-3 rounded-2xl text-sm mt-2">
+          <span data-lang-en="Cancel" data-lang-bn="বাদ দিন">Cancel</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       FEEDBACK MODAL
+  ═══════════════════════════════════════════ -->
+  <div id="modal-feedback" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card feedback-card">
+      <div class="modal-card-header">
+        <h3 class="font-bold text-white flex items-center gap-2">
+          <i data-lucide="message-circle" class="w-5 h-5 text-blue-400"></i>
+          <span data-lang-en="Send Feedback" data-lang-bn="মতামত পাঠান">Send Feedback</span>
+        </h3>
+        <button onclick="closeFeedback()" class="modal-close-btn"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <!-- Rating -->
+      <div class="fb-section">
+        <p class="fb-label" data-lang-en="How would you rate this platform?" data-lang-bn="প্ল্যাটফর্মটি কেমন লাগছে?">How would you rate this platform?</p>
+        <div class="rating-stars" id="rating-stars">
+          <button class="star-btn" data-val="1" onclick="setRating(1)">⭐</button>
+          <button class="star-btn" data-val="2" onclick="setRating(2)">⭐</button>
+          <button class="star-btn" data-val="3" onclick="setRating(3)">⭐</button>
+          <button class="star-btn" data-val="4" onclick="setRating(4)">⭐</button>
+          <button class="star-btn" data-val="5" onclick="setRating(5)">⭐</button>
+        </div>
+      </div>
+
+      <!-- App dropdown -->
+      <div class="fb-section">
+        <p class="fb-label" data-lang-en="Feedback about" data-lang-bn="কোন অ্যাপ সম্পর্কে">Feedback about</p>
+        <select id="fb-app" class="pf-input">
+          <option value="Platform" data-lang-en="General Platform" data-lang-bn="সাধারণ">General Platform</option>
+        </select>
+      </div>
+
+      <!-- Message -->
+      <div class="fb-section">
+        <p class="fb-label" data-lang-en="Your message" data-lang-bn="আপনার মতামত">Your message</p>
+        <textarea id="fb-message" class="pf-input pf-textarea" rows="3"
+          placeholder="Share your thoughts, suggestions or issues…" maxlength="500"></textarea>
+        <p class="text-xs text-slate-500 text-right mt-1"><span id="fb-char">0</span>/500</p>
+      </div>
+
+      <button onclick="submitFeedback()" id="btn-submit-feedback" class="btn-primary w-full py-3.5 rounded-2xl font-bold text-sm">
+        <i data-lucide="send" class="w-4 h-4 inline mr-1"></i>
+        <span data-lang-en="Send Feedback" data-lang-bn="পাঠান">Send Feedback</span>
+      </button>
+      <p class="text-xs text-slate-500 text-center mt-2" data-lang-en="Feedback goes directly to developer via Telegram" data-lang-bn="মতামত সরাসরি developer এর কাছে যাবে">Feedback goes directly to developer via Telegram</p>
+    </div>
+  </div>
+
+  <!-- Sync Banner container -->
+  <div id="sync-banners" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 space-y-2 pointer-events-none"></div>
+
+  <script src="config.js"></script>
+  <script src="profile.js"></script>
+  <script src="feedback.js"></script>
+  <script src="main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator)
+      window.addEventListener('load', () => navigator.serviceWorker.register('pwa/service-worker.js').catch(() => {}));
+  </script>
+</body>
+</html>
